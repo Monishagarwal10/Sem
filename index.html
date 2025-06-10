@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Performance Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <div class="calculator-card">
+            <div class="header-section">
+                <h1><i class="fas fa-graduation-cap"></i> Academic Performance Calculator</h1>
+                <div class="mode-switch">
+                    <button class="mode-btn active" data-mode="sgpa">SGPA Calculator</button>
+                    <button class="mode-btn" data-mode="cgpa">CGPA Calculator</button>
+                </div>
+            </div>
+
+            <!-- SGPA Calculator Form -->
+            <form id="sgpaForm" action="calculate.php" method="POST" class="active">
+                <div class="student-info">
+                    <div class="form-group">
+                        <label for="studentName"><i class="fas fa-user"></i> Student Name:</label>
+                        <input type="text" id="studentName" name="studentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rollNumber"><i class="fas fa-id-card"></i> Roll Number:</label>
+                        <input type="text" id="rollNumber" name="rollNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"><i class="fas fa-calendar"></i> Semester:</label>
+                        <select id="semester" name="semester" required>
+                            <option value="">Select Semester</option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="6">Semester 6</option>
+                            <option value="7">Semester 7</option>
+                            <option value="8">Semester 8</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="subjects-container">
+                    <h2><i class="fas fa-book"></i> Subject Details</h2>
+                    <div id="subjectsList">
+                        <div class="subject-row">
+                            <div class="form-group">
+                                <label>Subject Name:</label>
+                                <input type="text" name="subjects[]" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Credits:</label>
+                                <input type="number" name="credits[]" min="1" max="5" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Grade:</label>
+                                <select name="grades[]" required>
+                                    <option value="">Select Grade</option>
+                                    <option value="10.0">EX (91-100) - 10.0</option>
+                                    <option value="9.0">AA (86-90) - 9.0</option>
+                                    <option value="8.5">AB (81-85) - 8.5</option>
+                                    <option value="8.0">BB (76-80) - 8.0</option>
+                                    <option value="7.5">BC (71-75) - 7.5</option>
+                                    <option value="7.0">CC (66-70) - 7.0</option>
+                                    <option value="6.5">CD (61-65) - 6.5</option>
+                                    <option value="6.0">DD (56-60) - 6.0</option>
+                                    <option value="5.5">DE (51-55) - 5.5</option>
+                                    <option value="5.0">EE (40-50) - 5.0</option>
+                                    <option value="0.0">EF (<40) - 0.0</option>
+                                </select>
+                            </div>
+                            <button type="button" class="remove-btn" onclick="removeSubject(this)" style="display: none;">×</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addSubject" class="add-btn"><i class="fas fa-plus"></i> Add Subject</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="calculate-btn"><i class="fas fa-calculator"></i> Calculate SGPA</button>
+                </div>
+            </form>
+
+            <!-- CGPA Calculator Form -->
+            <form id="cgpaForm" action="calculate_cgpa.php" method="POST" class="hidden">
+                <div class="student-info">
+                    <div class="form-group">
+                        <label for="cgpaStudentName"><i class="fas fa-user"></i> Student Name:</label>
+                        <input type="text" id="cgpaStudentName" name="studentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cgpaRollNumber"><i class="fas fa-id-card"></i> Roll Number:</label>
+                        <input type="text" id="cgpaRollNumber" name="rollNumber" required>
+                    </div>
+                </div>
+
+                <div class="semesters-container">
+                    <h2><i class="fas fa-calendar-alt"></i> Semester Details</h2>
+                    <div id="semestersList">
+                        <div class="semester-row">
+                            <div class="form-group">
+                                <label>Semester:</label>
+                                <select name="semesters[]" required>
+                                    <option value="">Select Semester</option>
+                                    <option value="1">Semester 1</option>
+                                    <option value="2">Semester 2</option>
+                                    <option value="3">Semester 3</option>
+                                    <option value="4">Semester 4</option>
+                                    <option value="5">Semester 5</option>
+                                    <option value="6">Semester 6</option>
+                                    <option value="7">Semester 7</option>
+                                    <option value="8">Semester 8</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>SGPA:</label>
+                                <input type="number" name="sgpas[]" step="0.01" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Credits:</label>
+                                <input type="number" name="credits[]" min="1" required>
+                            </div>
+                            <button type="button" class="remove-btn" onclick="removeSemester(this)" style="display: none;">×</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addSemester" class="add-btn"><i class="fas fa-plus"></i> Add Semester</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="calculate-btn"><i class="fas fa-calculator"></i> Calculate CGPA</button>
+                </div>
+            </form>
+
+            <!-- Results Section -->
+            <div id="result" class="result-container" style="display: none;">
+                <h2><i class="fas fa-chart-line"></i> Result</h2>
+                <div class="result-content">
+                    <div class="student-details">
+                        <p><strong>Student Name:</strong> <span id="resultName"></span></p>
+                        <p><strong>Roll Number:</strong> <span id="resultRoll"></span></p>
+                        <p><strong>Semester:</strong> <span id="resultSemester"></span></p>
+                        <p><strong>SGPA:</strong> <span id="resultSGPA"></span></p>
+                    </div>
+                    <div class="marksheet">
+                        <h3><i class="fas fa-file-alt"></i> Marksheet</h3>
+                        <div class="marksheet-content" id="marksheetContent"></div>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button onclick="printMarksheet()" class="print-btn"><i class="fas fa-print"></i> Print Marksheet</button>
+                    <button onclick="downloadMarksheet()" class="download-btn"><i class="fas fa-download"></i> Download PDF</button>
+                </div>
+            </div>
+
+            <!-- CGPA Result Section -->
+            <div id="cgpaResult" class="result-container" style="display: none;">
+                <h2><i class="fas fa-chart-line"></i> CGPA Result</h2>
+                <div class="result-content">
+                    <div class="student-details">
+                        <p><strong>Student Name:</strong> <span id="cgpaResultName"></span></p>
+                        <p><strong>Roll Number:</strong> <span id="cgpaResultRoll"></span></p>
+                        <p><strong>CGPA:</strong> <span id="resultCGPA"></span></p>
+                    </div>
+                    <div class="semester-breakdown">
+                        <h3><i class="fas fa-list"></i> Semester Breakdown</h3>
+                        <div class="breakdown-content" id="breakdownContent"></div>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button onclick="printCGPAReport()" class="print-btn"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="downloadCGPAReport()" class="download-btn"><i class="fas fa-download"></i> Download PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
